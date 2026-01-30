@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'screens/splash/splash_screen.dart';
+import 'screens/admin/admin_home.dart';
+import 'screens/login/login_screen.dart';
+import 'screens/student/student_home.dart';
+import 'screens/teacher/teacher_home.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -10,18 +16,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'My project scool',
+      
+      title: 'EduSmartBot',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue,useMaterial3: true
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter Demo Home Page'),
-        ),
-        body: Center(
-          child: Text('Hello, World!'),
-        ),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/':(context) => const SplashScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/student': (context) => const StudentHome(),
+        '/teacher' :(context) => const TeacherHome(),
+        '/admin' : (context) => const AdminHome(),
+      },
     );
   }
 }
