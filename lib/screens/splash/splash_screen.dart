@@ -12,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return ;
       Navigator.pushReplacementNamed(context, '/login');
     });
@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: 
         Lottie.asset(
-          'assets/lottie/CMS computer animation',
+          'lib/assets/lottie/CMS computer animation.json',
           width: 300,
           height: 300,
           fit: BoxFit.fill,
