@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
+
   final TextEditingController matriculeController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -26,22 +27,44 @@ class LoginScreen extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 15),
+
+            const SizedBox(height: 15),
+
             TextField(
               controller: passwordController,
+              obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Mot de passe",
                 border: OutlineInputBorder(),
               ),
             ),
+
+            const SizedBox(height: 20),
+
             ElevatedButton(
               onPressed: () {
-                if (id.startWich("ETU")) {
-                  Navigator.pushNamed(context, '/student');
-                } else if (id.startWich("PROF")) {
-                  Navigator.pushNamed(context, 'teacher');
-                } else if (id.starWich("ADMIN")) {
-                  Navigator.pushNamed(context, '/admin');
+                final id = matriculeController.text.trim();
+
+                if (id.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Veuillez entrer un identifiant")),
+                  );
+                  return;
+                }
+
+                if (id.startsWith("ETU")) {
+                  Navigator.pushReplacementNamed(context, '/student');
+                } 
+                else if (id.startsWith("PROF")) {
+                  Navigator.pushReplacementNamed(context, '/teacher');
+                } 
+                else if (id.startsWith("ADMIN")) {
+                  Navigator.pushReplacementNamed(context, '/admin');
+                } 
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Identifiant invalide")),
+                  );
                 }
               },
               child: const Text("Se connecter"),
