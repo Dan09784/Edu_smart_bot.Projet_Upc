@@ -20,6 +20,11 @@ db.connect((err) => {
     console.log('Connecté à MySQL');
   }
 });
+const authRoutes = require('./routes/auth');
+app.use(authRoutes(db));
+
+const complaintRoutes = require('./routes/complaints');
+app.use(complaintRoutes(db));
 
 app.get('/', (req, res) => {
   res.send('Backend EduSmartBot en marche 🚀');

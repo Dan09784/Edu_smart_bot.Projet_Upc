@@ -5,10 +5,10 @@ import 'screens/login/login_screen.dart';
 import 'screens/student/student_home.dart';
 import 'screens/teacher/teacher_home.dart';
 
-
 void main() {
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -16,18 +16,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      
+
       title: 'EduSmartBot',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,useMaterial3: true
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       initialRoute: '/',
       routes: {
-        '/':(context) =>  SplashScreen(),
-        '/login': (context) =>  LoginScreen(),
-        '/student': (context) =>  StudentHome(),
-        '/teacher' :(context) =>  TeacherHome(),
-        '/admin' : (context) =>  AdminHome(),
+        '/': (context) => SplashScreen(),
+        '/login': (context) => LoginScreen(),
+        '/student': (context) => StudentHome(),
+        '/teacher': (context) => TeacherHome(),
+        '/admin': (context) => AdminHome(),
       },
     );
   }
