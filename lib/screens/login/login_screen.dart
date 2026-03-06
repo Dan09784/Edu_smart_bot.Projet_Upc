@@ -86,16 +86,27 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "EduSmartBot",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          // background image
+          Positioned.fill(
+            child: Image.asset(
+              'lib/assets/lottie/InscripBack.JPG',
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 30),
+          ),
+
+          // form content
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "EduSmartBot",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 30),
 
             TextField(
               controller: matriculeController,
@@ -134,6 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
+    ],
+  ),
     );
   }
 }
