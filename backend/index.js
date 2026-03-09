@@ -26,6 +26,15 @@ app.use(authRoutes(db));
 const complaintRoutes = require('./routes/complaints');
 app.use(complaintRoutes(db));
 
+const coursesRoutes = require('./routes/courses');
+app.use(coursesRoutes(db));
+
+const studentsRoutes = require('./routes/students');
+app.use(studentsRoutes(db));
+
+const teachersRoutes = require('./routes/teachers');
+app.use(teachersRoutes(db));
+
 app.get('/', (req, res) => {
   res.send('Backend EduSmartBot en marche 🚀');
 });
