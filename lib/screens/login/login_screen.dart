@@ -1,9 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,11 +11,23 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
+
   final TextEditingController matriculeController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
 
+  bool isLoading = false;
+  bool obscure = true;
+
+  late AnimationController floatController;
+  late Animation<double> floatAnimation;
+
+  late AnimationController appearController;
+  late Animation<double> fade;
+  late Animation<Offset> slide;
+
+  /// TA LOGIQUE LOGIN (inchangée)
   Future<void> login() async {
     setState(() => isLoading = true);
 
@@ -59,9 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
           } else if (role == "admin") {
             Navigator.pushReplacementNamed(context, '/admin');
           } else {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Rôle inconnu: $role")));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Rôle inconnu: $role")),
+            );
           }
         }
       } else {
@@ -87,11 +98,53 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    /// animation logo flottant
+    floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    floatAnimation = Tween<double>(begin: -8, end: 8).animate(
+      CurvedAnimation(parent: floatController, curve: Curves.easeInOut),
+    );
+
+    /// animation apparition écran
+    appearController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+
+    fade = Tween<double>(begin: 0, end: 1).animate(appearController);
+
+    slide = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: appearController,
+      curve: Curves.easeOut,
+    ));
+
+    appearController.forward();
+  }
+
+  @override
+  void dispose() {
+    floatController.dispose();
+    appearController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Stack(
         children: [
-          // background image
+
+          /// IMAGE DE FOND
           Positioned.fill(
             child: Image.asset(
               'lib/assets/lottie/InscripBack.JPG',
@@ -99,74 +152,195 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          // form content
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                  AnimatedOpacity(opacity: 1.0, duration: Duration(seconds: 1)),
-                Text(
-                  "EduSmartBot",
-                  style: GoogleFonts.poppins(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 245, 245, 245),
-                  ),
-                ),
-                const SizedBox(height: 30),
+          /// OVERLAY SOMBRE
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  // ignore: deprecated_member_use
+                  Colors.black.withOpacity(0.65),
+                  // ignore: deprecated_member_use
+                  Colors.black.withOpacity(0.2),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
+          ),
 
-                TextField(
-                  controller: matriculeController,
-                  decoration:  InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    labelText: "Matricule / Email",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          /// LOGIN CARD
+          Center(
+            child: FadeTransition(
+              opacity: fade,
+              child: SlideTransition(
+                position: slide,
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(28),
+
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+
+                      child: Container(
+                        width: 360,
+                        padding: const EdgeInsets.all(28),
+
+                        decoration: BoxDecoration(
+                          // ignore: deprecated_member_use
+                          color: Colors.white.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(
+                            // ignore: deprecated_member_use
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            /// LOGO FLOTTANT
+                            AnimatedBuilder(
+                              animation: floatAnimation,
+                              builder: (context, child) {
+                                return Transform.translate(
+                                  offset: Offset(0, floatAnimation.value),
+                                  child: child,
+                                );
+                              },
+                              child: Container(
+                                height: 80,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xffFF416C),
+                                      Color(0xffFF4B2B),
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      // ignore: deprecated_member_use
+                                      color: Colors.red.withOpacity(0.4),
+                                      blurRadius: 25,
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.school,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            Text(
+                              "EduSmartBot",
+                              style: GoogleFonts.poppins(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+
+                            /// EMAIL
+                            TextField(
+                              controller: matriculeController,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                filled: true,
+                                // ignore: deprecated_member_use
+                                fillColor: Colors.white.withOpacity(0.08),
+                                prefixIcon: const Icon(Icons.person, color: Colors.white),
+                                hintText: "Matricule / Email",
+                                hintStyle: const TextStyle(color: Colors.white54),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            /// PASSWORD
+                            TextField(
+                              controller: passwordController,
+                              obscureText: obscure,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                filled: true,
+                                // ignore: deprecated_member_use
+                                fillColor: Colors.white.withOpacity(0.08),
+                                prefixIcon: const Icon(Icons.lock, color: Colors.white),
+
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    obscure ? Icons.visibility : Icons.visibility_off,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
+                                  },
+                                ),
+
+                                hintText: "Mot de passe",
+                                hintStyle: const TextStyle(color: Colors.white54),
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 25),
+
+                            /// BOUTON LOGIN
+                            SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: ElevatedButton(
+                                onPressed: login,
+
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 10,
+                                  // ignore: deprecated_member_use
+                                  shadowColor: Colors.red.withOpacity(0.5),
+                                  backgroundColor: const Color(0xffFF416C),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+
+                                child: isLoading
+                                    ? const CircularProgressIndicator(color: Colors.white)
+                                    : const Text(
+                                        "Se connecter",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 15),
-
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration:  InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: "Mot de passe",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  height: 50,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed:  login,
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    ),
-                    child: isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ):  Text("Se connecter",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold
-                            )),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
