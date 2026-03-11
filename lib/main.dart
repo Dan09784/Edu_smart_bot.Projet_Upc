@@ -4,6 +4,7 @@ import 'screens/admin/admin_home.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/student/student_home.dart';
 import 'screens/teacher/teacher_home.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       title: 'EduSmartBot',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true,
+          textTheme: GoogleFonts.poppinsTextTheme()),
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),

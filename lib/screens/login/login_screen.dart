@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -102,17 +105,25 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                  AnimatedOpacity(opacity: 1.0, duration: Duration(seconds: 1)),
+                Text(
                   "EduSmartBot",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 245, 245, 245),
+                  ),
                 ),
                 const SizedBox(height: 30),
 
                 TextField(
                   controller: matriculeController,
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.person),
                     labelText: "Matricule / Email",
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
 
@@ -121,25 +132,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.lock),
                     labelText: "Mot de passe",
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
 
-                SizedBox(
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  height: 50,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: isLoading ? null : login,
+                    onPressed:  login,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    ),
                     child: isLoading
                         ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text("Se connecter"),
+                          ):  Text("Se connecter",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold
+                            )),
                   ),
                 ),
               ],
