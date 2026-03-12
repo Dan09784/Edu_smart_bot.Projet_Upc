@@ -315,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 style: ElevatedButton.styleFrom(
                                   elevation: 10,
                                   // ignore: deprecated_member_use
-                                  shadowColor: Colors.red.withOpacity(0.5),
+                                  shadowColor: const Color.fromARGB(255, 240, 238, 238).withOpacity(0.5),
                                   backgroundColor: const Color(0xffFF416C),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
@@ -330,9 +330,11 @@ class _LoginScreenState extends State<LoginScreen>
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           letterSpacing: 1,
+                                          color: Colors.white,
                                         ),
                                       ),
                               ),
+                              
                             ),
                           ],
                         ),
