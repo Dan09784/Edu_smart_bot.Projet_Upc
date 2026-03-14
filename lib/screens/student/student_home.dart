@@ -1,3 +1,4 @@
+import 'package:edu_smart_bot/screens/student/courses_screen.dart';
 import 'package:flutter/material.dart';
 
 class StudentHome extends StatefulWidget {
@@ -161,7 +162,12 @@ class _StudentHomeState extends State<StudentHome> {
                     icon: Icons.school,
                     title: "Mes cours",
                     color: const Color(0xFF3A7BFF),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CoursesScreen()));
+                    },
+                    
                   ),
 
                   dashboardCard(
