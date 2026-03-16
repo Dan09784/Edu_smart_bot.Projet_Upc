@@ -9,14 +9,11 @@ class StudentHome extends StatefulWidget {
 }
 
 class _StudentHomeState extends State<StudentHome> {
-
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       backgroundColor: const Color(0xFFF4F6FA),
 
       appBar: AppBar(
@@ -25,32 +22,24 @@ class _StudentHomeState extends State<StudentHome> {
 
         title: const Text(
           "EduSmartBot",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
 
         actions: [
-
           IconButton(
-            icon: const Icon(Icons.notifications_none,color: Colors.black),
+            icon: const Icon(Icons.notifications_none, color: Colors.black),
             onPressed: () {},
           ),
 
           const Padding(
             padding: EdgeInsets.only(right: 12),
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor: Colors.grey,
-            ),
-          )
+            child: CircleAvatar(radius: 18, backgroundColor: Colors.grey),
+          ),
         ],
       ),
 
       body: Column(
         children: [
-
           /// HEADER
           Container(
             width: double.infinity,
@@ -58,10 +47,7 @@ class _StudentHomeState extends State<StudentHome> {
 
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF3A7BFF),
-                  Color(0xFF6A9CFF),
-                ],
+                colors: [Color(0xFF3A7BFF), Color(0xFF6A9CFF)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -75,7 +61,6 @@ class _StudentHomeState extends State<StudentHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const Text(
                   "Bonjour Dan 👋",
                   style: TextStyle(
@@ -89,10 +74,7 @@ class _StudentHomeState extends State<StudentHome> {
 
                 const Text(
                   "Prêt à apprendre aujourd'hui ?",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 15),
                 ),
 
                 const SizedBox(height: 22),
@@ -110,7 +92,6 @@ class _StudentHomeState extends State<StudentHome> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-
                       Text(
                         "Progression globale",
                         style: TextStyle(
@@ -125,21 +106,18 @@ class _StudentHomeState extends State<StudentHome> {
                         value: 0.6,
                         minHeight: 8,
                         backgroundColor: Colors.white30,
-                        valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
 
                       SizedBox(height: 8),
 
                       Text(
                         "60% des cours terminés",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      )
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -157,7 +135,6 @@ class _StudentHomeState extends State<StudentHome> {
                 mainAxisSpacing: 18,
 
                 children: [
-
                   dashboardCard(
                     icon: Icons.school,
                     title: "Mes cours",
@@ -165,9 +142,11 @@ class _StudentHomeState extends State<StudentHome> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const CoursesScreen()));
+                        MaterialPageRoute(
+                          builder: (context) => const CoursesScreen(),
+                        ),
+                      );
                     },
-                    
                   ),
 
                   dashboardCard(
@@ -193,24 +172,17 @@ class _StudentHomeState extends State<StudentHome> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
 
       /// BOTTOM NAVIGATION
       bottomNavigationBar: Container(
-
         decoration: const BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-            )
-          ],
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
         ),
 
         child: BottomNavigationBar(
-
           currentIndex: _currentIndex,
           selectedItemColor: const Color(0xFF3A7BFF),
           unselectedItemColor: Colors.grey,
@@ -223,21 +195,11 @@ class _StudentHomeState extends State<StudentHome> {
           },
 
           items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil"),
 
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Accueil",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.book), label: "Cours"),
 
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: "Cours",
-            ),
-
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profil",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
           ],
         ),
       ),
@@ -250,16 +212,12 @@ class _StudentHomeState extends State<StudentHome> {
     required Color color,
     required VoidCallback onTap,
   }) {
-
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0.9, end: 1),
       duration: const Duration(milliseconds: 400),
 
       builder: (context, double value, child) {
-        return Transform.scale(
-          scale: value,
-          child: child,
-        );
+        return Transform.scale(scale: value, child: child);
       },
 
       child: Material(
@@ -282,7 +240,6 @@ class _StudentHomeState extends State<StudentHome> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 Container(
                   padding: const EdgeInsets.all(16),
 
@@ -298,11 +255,7 @@ class _StudentHomeState extends State<StudentHome> {
                     shape: BoxShape.circle,
                   ),
 
-                  child: Icon(
-                    icon,
-                    size: 32,
-                    color: color,
-                  ),
+                  child: Icon(icon, size: 32, color: color),
                 ),
 
                 const SizedBox(height: 16),
@@ -313,7 +266,7 @@ class _StudentHomeState extends State<StudentHome> {
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
-                )
+                ),
               ],
             ),
           ),
