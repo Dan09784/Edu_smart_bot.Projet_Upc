@@ -14,7 +14,7 @@ class _CoursesScreenState extends State<CoursesScreen>
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
 
-  final String apiUrl = "http://10.0.2.2:3000/courses"; // émulateur
+  final String apiUrl = "http://172.20.10.3:3000/courses"; 
 
   Future<List<dynamic>> fetchCourses() async {
     final response = await http.get(Uri.parse(apiUrl));
