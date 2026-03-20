@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:edu_smart_bot/services/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen>
       debugPrint("🔍 Tentative de connexion avec: $id");
 
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:3000/login'),
+        Uri.parse(ApiConfig.loginEndpoint),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": id, "password": password}),
       );

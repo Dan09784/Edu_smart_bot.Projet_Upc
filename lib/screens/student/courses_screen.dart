@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:edu_smart_bot/services/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,22 +14,65 @@ class _CoursesScreenState extends State<CoursesScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
+  
+  // ✅ Stocker le Future pour éviter les appels multiples
+  late Future<List<dynamic>> _futureCourses;
 
-  final String apiUrl = "http://172.20.10.3:3000/courses"; 
+  final String apiUrl = ApiConfig.coursesEndpoint;
 
   Future<List<dynamic>> fetchCourses() async {
-    final response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Erreur serveur");
+    // ignore: avoid_print
+    print("=========================================");
+    // ignore: avoid_print
+    print("🌐 URL complète: $apiUrl");
+    // ignore: avoid_print
+    print("=========================================");
+    
+    try {
+      final response = await http.get(Uri.parse(apiUrl)).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          // ignore: avoid_print
+          print("⏰ TIMEOUT");
+          throw Exception("Délai d'attente dépassé");
+        },
+      );
+      
+      // ignore: avoid_print
+      print("📡 Status code: ${response.statusCode}");
+      // ignore: avoid_print
+      print("📦 Response body: ${response.body}");
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // ignore: avoid_print
+        print("✅ Données décodées: $data");
+        // ignore: avoid_print
+        print("📊 Nombre de cours: ${data.length}");
+        return data;
+      } else {
+        // ignore: avoid_print
+        print("❌ Erreur HTTP: ${response.statusCode}");
+        throw Exception("Erreur serveur: ${response.statusCode}");
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print("❌ Exception: $e");
+      throw Exception("Erreur de connexion: $e");
     }
   }
 
   @override
   void initState() {
     super.initState();
+    // ignore: avoid_print
+    print("🚀 CoursesScreen initialisée");
+    // ignore: avoid_print
+    print("📡 URL API configurée: $apiUrl");
+    
+    // ✅ Initialiser le Future une seule fois
+    _futureCourses = fetchCourses();
+    
     _controller = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
@@ -97,7 +141,6 @@ class _CoursesScreenState extends State<CoursesScreen>
             child: SafeArea(
               child: Column(
                 children: [
-                  // HEADER
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 16),
@@ -114,7 +157,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                                 BoxShadow(
                                   color: Colors.black12,
                                   blurRadius: 6,
-                                  offset: Offset(0, 3),
+                                  offset: const Offset(0, 3),
                                 )
                               ],
                             ),
@@ -137,27 +180,68 @@ class _CoursesScreenState extends State<CoursesScreen>
                     ),
                   ),
                   const SizedBox(height: 10),
-
-                  /// 🔥 DATA FROM API
                   Expanded(
+                    // ✅ Utiliser le Future stocké
                     child: FutureBuilder(
-                      future: fetchCourses(),
+                      future: _futureCourses,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        // ignore: avoid_print
+                        print("🔍 Snapshot state: ${snapshot.connectionState}");
+                        
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text("Chargement des cours..."),
+                              ],
+                            ),
+                          );
                         } else if (snapshot.hasError) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error, size: 48, color: Colors.red),
+                                const SizedBox(height: 16),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                                  child: Text(
+                                    "Erreur: ${snapshot.error}",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _futureCourses = fetchCourses();
+                                    });
+                                  },
+                                  child: const Text("Réessayer"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
                           return const Center(
-                              child: Text("Erreur chargement"));
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.book, size: 48, color: Colors.grey),
+                                SizedBox(height: 16),
+                                Text("Aucun cours disponible"),
+                              ],
+                            ),
+                          );
                         } else {
                           final courses = snapshot.data as List;
-                          if (courses.isEmpty) {
-                            return const Center(
-                              child: Text("Aucun cours disponible"),
-                            );
-                          }
-
+                          // ignore: avoid_print
+                          print("🎯 Affichage de ${courses.length} cours");
+                          
                           return GridView.builder(
                             padding: const EdgeInsets.all(20),
                             gridDelegate:
@@ -171,7 +255,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                             itemBuilder: (context, index) {
                               final course = courses[index];
                               final title = course["name"] ?? "Cours";
-                              final progress = 0.5; // temporaire
+                              final progress = 0.5;
                               final icon = getIcon(title);
                               final color = getColor(title);
 
@@ -189,8 +273,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                                   );
                                 },
                                 child: AnimatedContainer(
-                                  duration:
-                                      const Duration(milliseconds: 400),
+                                  duration: const Duration(milliseconds: 400),
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -214,8 +297,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Icon(icon, color: Colors.white, size: 32),
                                       const Spacer(),
@@ -254,7 +336,6 @@ class _CoursesScreenState extends State<CoursesScreen>
   }
 }
 
-/// DETAIL SCREEN
 class CourseDetailScreen extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -282,10 +363,8 @@ class CourseDetailScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // HEADER avec bouton retour
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Row(
                   children: [
                     GestureDetector(
@@ -299,7 +378,7 @@ class CourseDetailScreen extends StatelessWidget {
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 6,
-                              offset: Offset(0, 3),
+                              offset: const Offset(0, 3),
                             )
                           ],
                         ),
