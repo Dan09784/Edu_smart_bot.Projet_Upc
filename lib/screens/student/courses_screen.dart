@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:edu_smart_bot/services/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:edu_smart_bot/screens/student/courses_detail_screen.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -15,7 +16,6 @@ class _CoursesScreenState extends State<CoursesScreen>
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
   
-  // ✅ Stocker le Future pour éviter les appels multiples
   late Future<List<dynamic>> _futureCourses;
 
   final String apiUrl = ApiConfig.coursesEndpoint;
@@ -70,7 +70,6 @@ class _CoursesScreenState extends State<CoursesScreen>
     // ignore: avoid_print
     print("📡 URL API configurée: $apiUrl");
     
-    // ✅ Initialiser le Future une seule fois
     _futureCourses = fetchCourses();
     
     _controller = AnimationController(
@@ -181,7 +180,6 @@ class _CoursesScreenState extends State<CoursesScreen>
                   ),
                   const SizedBox(height: 10),
                   Expanded(
-                    // ✅ Utiliser le Future stocké
                     child: FutureBuilder(
                       future: _futureCourses,
                       builder: (context, snapshot) {
@@ -261,14 +259,11 @@ class _CoursesScreenState extends State<CoursesScreen>
 
                               return GestureDetector(
                                 onTap: () {
+                                  // ✅ CORRECTION : Passer l'objet course complet
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => CourseDetailScreen(
-                                        title: title,
-                                        icon: icon,
-                                        color: color,
-                                      ),
+                                      builder: (_) => CourseDetailScreen(course: course),
                                     ),
                                   );
                                 },
@@ -332,85 +327,6 @@ class _CoursesScreenState extends State<CoursesScreen>
           ),
         );
       },
-    );
-  }
-}
-
-class CourseDetailScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color color;
-
-  const CourseDetailScreen({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            // ignore: deprecated_member_use
-            colors: [Colors.white, color.withOpacity(0.3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            )
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.black87,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
-              const Center(
-                child: Text(
-                  "Contenu du cours bientôt disponible",
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

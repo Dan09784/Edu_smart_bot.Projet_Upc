@@ -26,6 +26,7 @@ module.exports = (db) => {
             role: 'student',
             name: studentResults[0].name,
             matricule: studentResults[0].matricule,
+            email: studentResults[0].email
           });
         }
 

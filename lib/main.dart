@@ -5,7 +5,7 @@ import 'screens/login/login_screen.dart';
 import 'screens/student/student_home.dart';
 import 'screens/teacher/teacher_home.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:edu_smart_bot/screens/login/register_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,15 +20,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       title: 'EduSmartBot',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true,
-          textTheme: GoogleFonts.poppinsTextTheme()),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        textTheme: GoogleFonts.poppinsTextTheme(),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
         '/login': (context) => LoginScreen(),
-        '/student': (context) => StudentHome(),
+        '/student': (context) => StudentHome(user: {},),
         '/teacher': (context) => TeacherHome(),
         '/admin': (context) => AdminHome(),
+        '/register': (context) => RegisterScreen(),
       },
     );
   }

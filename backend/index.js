@@ -35,6 +35,9 @@ app.use(studentsRoutes(db));
 const teachersRoutes = require('./routes/teachers');
 app.use(teachersRoutes(db));
 
+const registerRoutes = require('./routes/register');
+app.use(registerRoutes(db));
+
 app.get('/', (req, res) => {
   res.send('Backend EduSmartBot en marche 🚀');
 });

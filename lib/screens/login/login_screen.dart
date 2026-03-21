@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-
   final TextEditingController matriculeController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -28,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen>
   late Animation<double> fade;
   late Animation<Offset> slide;
 
-  /// TA LOGIQUE LOGIN (inchangée)
+  /// LOGIQUE LOGIN
   Future<void> login() async {
     setState(() => isLoading = true);
 
@@ -59,6 +58,8 @@ class _LoginScreenState extends State<LoginScreen>
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        // ignore: avoid_print
+        print("Donnee reçues: $data");
         final role = data['role'];
 
         debugPrint("✅ Rôle reçu: $role");
@@ -71,9 +72,9 @@ class _LoginScreenState extends State<LoginScreen>
           } else if (role == "admin") {
             Navigator.pushReplacementNamed(context, '/admin');
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Rôle inconnu: $role")),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Rôle inconnu: $role")));
           }
         }
       } else {
@@ -123,10 +124,7 @@ class _LoginScreenState extends State<LoginScreen>
     slide = Tween<Offset>(
       begin: const Offset(0, 0.15),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: appearController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: appearController, curve: Curves.easeOut));
 
     appearController.forward();
   }
@@ -140,11 +138,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
         children: [
-
           /// IMAGE DE FOND
           Positioned.fill(
             child: Image.asset(
@@ -201,7 +197,6 @@ class _LoginScreenState extends State<LoginScreen>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-
                             /// LOGO FLOTTANT
                             AnimatedBuilder(
                               animation: floatAnimation,
@@ -251,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen>
 
                             const SizedBox(height: 30),
 
-                            /// EMAIL
+                            /// MATRICULE / EMAIL
                             TextField(
                               controller: matriculeController,
                               style: const TextStyle(color: Colors.white),
@@ -259,9 +254,14 @@ class _LoginScreenState extends State<LoginScreen>
                                 filled: true,
                                 // ignore: deprecated_member_use
                                 fillColor: Colors.white.withOpacity(0.08),
-                                prefixIcon: const Icon(Icons.person, color: Colors.white),
+                                prefixIcon: const Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                ),
                                 hintText: "Matricule / Email",
-                                hintStyle: const TextStyle(color: Colors.white54),
+                                hintStyle: const TextStyle(
+                                  color: Colors.white54,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(18),
                                   borderSide: BorderSide.none,
@@ -280,11 +280,16 @@ class _LoginScreenState extends State<LoginScreen>
                                 filled: true,
                                 // ignore: deprecated_member_use
                                 fillColor: Colors.white.withOpacity(0.08),
-                                prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                                prefixIcon: const Icon(
+                                  Icons.lock,
+                                  color: Colors.white,
+                                ),
 
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    obscure ? Icons.visibility : Icons.visibility_off,
+                                    obscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                     color: Colors.white,
                                   ),
                                   onPressed: () {
@@ -295,7 +300,9 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
 
                                 hintText: "Mot de passe",
-                                hintStyle: const TextStyle(color: Colors.white54),
+                                hintStyle: const TextStyle(
+                                  color: Colors.white54,
+                                ),
 
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(18),
@@ -316,7 +323,13 @@ class _LoginScreenState extends State<LoginScreen>
                                 style: ElevatedButton.styleFrom(
                                   elevation: 10,
                                   // ignore: deprecated_member_use
-                                  shadowColor: const Color.fromARGB(255, 240, 238, 238).withOpacity(0.5),
+                                  shadowColor: const Color.fromARGB(
+                                    255,
+                                    240,
+                                    238,
+                                    238,
+                                  // ignore: deprecated_member_use
+                                  ).withOpacity(0.5),
                                   backgroundColor: const Color(0xffFF416C),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
@@ -324,7 +337,9 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
 
                                 child: isLoading
-                                    ? const CircularProgressIndicator(color: Colors.white)
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
                                     : const Text(
                                         "Se connecter",
                                         style: TextStyle(
@@ -335,7 +350,31 @@ class _LoginScreenState extends State<LoginScreen>
                                         ),
                                       ),
                               ),
-                              
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            /// LIEN VERS INSCRIPTION
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Pas de compte ? ",
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/register');
+                                  },
+                                  child: const Text(
+                                    "S'inscrire",
+                                    style: TextStyle(
+                                      color: Color(0xffFF416C),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
